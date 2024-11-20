@@ -39,10 +39,12 @@ Y_train = to_categorical(y_train, nb_classes)
 Y_test = to_categorical(y_test, nb_classes)
 
 model = Sequential()
-model.add(Convolution2D(32, 3))
-model.add(Activation('relu'))
-model.add(Convolution2D(32, 3))
-model.add(Activation('relu'))
+# model.add(Convolution2D(32, 3));model.add(Activation('relu'));
+# model.add(Convolution2D(32, 3, input_shape=(28, 28, 1)));model.add(Activation('relu'));
+# model.add(Convolution2D(32, 3, activation='relu', input_shape=(28, 28, 1)))
+from keras.layers import Input;model.add(Input(shape=(28,28,1)));
+model.add(Convolution2D(32, 3));model.add(Activation('relu'))
+model.add(Convolution2D(32, 3, activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 model.add(Flatten())
@@ -51,6 +53,7 @@ model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
+model.summary()
 
 model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
 
