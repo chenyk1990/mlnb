@@ -16,7 +16,7 @@ from keras.utils import to_categorical
 
 batch_size = 128
 nb_classes = 10
-nb_epoch = 12
+nb_epoch = 20
 
 # the data, shuffled and split between tran and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
