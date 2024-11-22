@@ -1,7 +1,8 @@
 from keras.models import Sequential
 from keras.layers import Activation, Dense, RepeatVector, Input
 from keras.layers import RNN
-from keras.src import ops
+# from keras.src import ops #not work for keras 2.0
+import tensorflow as tf
 from sklearn.utils import shuffle
 import numpy as np
 
@@ -61,8 +62,10 @@ class MinimalRNNCell(keras.layers.Layer):
 
     def call(self, inputs, states):
         prev_output = states[0]
-        h = ops.matmul(inputs, self.kernel)
-        output = h + ops.matmul(prev_output, self.recurrent_kernel)
+#         h = ops.matmul(inputs, self.kernel)
+#         output = h + ops.matmul(prev_output, self.recurrent_kernel)
+        h = tf.matmul(inputs, self.kernel)
+        output = h + tf.matmul(prev_output, self.recurrent_kernel) #tf can be compatible downward (work for keras 2.0)
         return output, [output]
         
 class CharacterTable(object):
@@ -101,6 +104,7 @@ class colors:
 TRAINING_SIZE = 50000
 DIGITS = 3
 INVERT = True
+INVERT = False
 # Try replacing JZS1 with LSTM, GRU, or SimpleRNN
 HIDDEN_SIZE = 128
 BATCH_SIZE = 128
@@ -169,8 +173,7 @@ for _ in range(LAYERS):
 # For each of step of the output sequence, decide which character should be chosen
 model.add(Dense(len(chars)))
 model.add(Activation('softmax'))
-
-model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Train the model each generation and show predictions against the validation dataset
 for iteration in range(1, 200):
